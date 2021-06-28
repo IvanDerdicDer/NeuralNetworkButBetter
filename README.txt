@@ -13,6 +13,9 @@ Intended to be inherited by other models and modified to work as intended for th
 
 class NeuralNetwork:
     Methods:
+        softmaxActivation(outputOfTheLastLayer: list[float]) -> list[float]
+            - converts the output of the given layer (should be the last layer) to a probability chart
+            (sum of the return list is 1)
         addLayer(self, numberOfNodes: int) - add a layer of numberOfNodes nodes
         layerSum(self, inputValues: list[float], numberOfLayers: int) -> list[float]
             - a recursive function that goes trough the layers and executes the neural network
