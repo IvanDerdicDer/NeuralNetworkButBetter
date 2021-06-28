@@ -1,6 +1,6 @@
 from math import exp
 from Nodes import *
-from random import random
+from random import random, randint
 
 class NeuralNetwork:
     def __init__(self, nodeType = RELNode):
@@ -42,23 +42,32 @@ class NeuralNetwork:
     def layerSum(self, inputValues: list[float], numberOfLayers: int) -> list[float]:
         indexOfCurrentLayer = numberOfLayers - 1
         lengthOfCurrentLayer = len(self.neuralNetworkLayers[indexOfCurrentLayer])
-        lengthOfNextLayer = len(self.neuralNetworkLayers[(indexOfCurrentLayer + 1) % len(self.neuralNetworkLayers)])
         if not indexOfCurrentLayer:
-            toReturn = 0
-            for i in range(lengthOfCurrentLayer):
-                toReturn += self.neuralNetworkLayers[indexOfCurrentLayer][i].output(inputValues[i])
-
-            return [toReturn] * lengthOfNextLayer
+            return [self.neuralNetworkLayers[indexOfCurrentLayer][i].output(inputValues[i]) for i in range(lengthOfCurrentLayer)]
 
         previousLayerOutput: list[float] = self.layerSum(inputValues, numberOfLayers - 1)
 
-        if indexOfCurrentLayer == len(self.neuralNetworkLayers) - 1:
-            return self.softmaxActivation([self.neuralNetworkLayers[indexOfCurrentLayer][i].output(previousLayerOutput[i]) for i in range(lengthOfCurrentLayer)])
+        #print(f"Output of layer({indexOfCurrentLayer - 1}): {previousLayerOutput}")
 
-        return [sum([self.neuralNetworkLayers[indexOfCurrentLayer][i].output(previousLayerOutput[i]) for i in range(lengthOfCurrentLayer)])] * lengthOfNextLayer
+        if indexOfCurrentLayer == len(self.neuralNetworkLayers) - 1:
+            return self.softmaxActivation([sum([node.output(x) for x in previousLayerOutput]) for node in self.neuralNetworkLayers[indexOfCurrentLayer]])
+
+        return [sum([node.output(x) for x in previousLayerOutput]) for node in self.neuralNetworkLayers[indexOfCurrentLayer]]
 
     def runNetwork(self, inputList: list[float]) -> list[float]:
         if len(inputList) != len(self.neuralNetworkLayers[0]):
             raise IndexError("Length of the 'inputList' does not match the number of nodes in the first layer")
 
         return self.layerSum(inputList, len(self.neuralNetworkLayers))
+
+
+"""if __name__ == '__main__':
+    nn = NeuralNetwork()
+    for _ in range(4):
+        nn.addLayer(4)
+
+    inputList = [randint(1, 5) for _ in range(4)]
+
+    print(nn)
+
+    print(f"Output of layer(4): {nn.runNetwork(inputList)}")"""
