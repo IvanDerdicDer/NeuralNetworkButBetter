@@ -1,5 +1,5 @@
 from math import exp
-from Nodes import RELNode
+from Nodes import *
 from random import random
 
 class NeuralNetwork:
