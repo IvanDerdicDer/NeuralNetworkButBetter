@@ -18,9 +18,10 @@ class NeuralNetwork:
             (sum of the return list is 1)
         addLayer(self, numberOfNodes: int) - add a layer of numberOfNodes nodes
         layerSum(self, inputValues: list[float], numberOfLayers: int) -> list[float]
-            - a recursive function that goes trough the layers and executes the neural network
+            - runs one layer
         runNetwork(self, inputList: list[float]) -> list[float]
             - checks if the network can be ran with the given input list
+            - runs the network
 
 # MutatableNeuralNetwork.py #
 Inherits the NeuralNetwork class. Expands it for genetic algorithm learning.

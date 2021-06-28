@@ -37,28 +37,22 @@ class NeuralNetwork:
         if type(numberOfNodes) != type(int()):
             raise TypeError("'numberOfNodes' should be an int")
 
-        self.neuralNetworkLayers.append([self.node(random(), random()) for _ in range(numberOfNodes)])
+        self.neuralNetworkLayers.append([self.node(random() * randint(-100, 100) / 100,
+                                                   random() * randint(-100, 100) / 100) for _ in range(numberOfNodes)])
 
-    def layerSum(self, inputValues: list[float], numberOfLayers: int) -> list[float]:
-        indexOfCurrentLayer = numberOfLayers - 1
-        lengthOfCurrentLayer = len(self.neuralNetworkLayers[indexOfCurrentLayer])
-        if not indexOfCurrentLayer:
-            return [self.neuralNetworkLayers[indexOfCurrentLayer][i].output(inputValues[i]) for i in range(lengthOfCurrentLayer)]
-
-        previousLayerOutput: list[float] = self.layerSum(inputValues, numberOfLayers - 1)
-
-        #print(f"Output of layer({indexOfCurrentLayer - 1}): {previousLayerOutput}")
-
-        if indexOfCurrentLayer == len(self.neuralNetworkLayers) - 1:
-            return self.softmaxActivation([sum([node.output(x) for x in previousLayerOutput]) for node in self.neuralNetworkLayers[indexOfCurrentLayer]])
-
-        return [sum([node.output(x) for x in previousLayerOutput]) for node in self.neuralNetworkLayers[indexOfCurrentLayer]]
+    @staticmethod
+    def layerSum(inputValues: list[float], layer: list) -> list[float]:
+        return [sum([node.output(x) for x in inputValues]) for node in layer]
 
     def runNetwork(self, inputList: list[float]) -> list[float]:
         if len(inputList) != len(self.neuralNetworkLayers[0]):
             raise IndexError("Length of the 'inputList' does not match the number of nodes in the first layer")
 
-        return self.layerSum(inputList, len(self.neuralNetworkLayers))
+        nextInput = inputList.copy()
+        for layer in self.neuralNetworkLayers:
+            nextInput = self.layerSum(nextInput, layer)
+
+        return self.softmaxActivation(nextInput)
 
 
 """if __name__ == '__main__':
