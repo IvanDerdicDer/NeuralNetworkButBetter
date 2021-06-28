@@ -3,9 +3,9 @@ from Nodes import RELNode
 from random import random
 
 class NeuralNetwork:
-    def __init__(self):
-        self.node = RELNode
-        self.neuralNetworkLayers:list[list[RELNode]] = []
+    def __init__(self, nodeType = RELNode):
+        self.node = nodeType
+        self.neuralNetworkLayers:list[list[nodeType]] = []
 
     def __repr__(self) -> str:
         output = ''
